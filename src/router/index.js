@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { AppLayoutsEnum } from '../layouts/layouts.types'
+import {useAuthStore} from '@/store/AuthStore.js'
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -21,7 +22,8 @@ const router = createRouter({
             },
           ],
           meta: {
-            layout: AppLayoutsEnum.empty
+            layout: AppLayoutsEnum.empty,
+            auth:false
           }
         },
         {
@@ -29,7 +31,7 @@ const router = createRouter({
           name:'Home',
           component: () => import('../pages/Home.vue'),
           meta: {
-            layout: AppLayoutsEnum.empty
+            layout: AppLayoutsEnum.main,
           }
         },
         {
@@ -37,10 +39,22 @@ const router = createRouter({
             name:'Info',
             component: () => import('../pages/InfoPage.vue'),
             meta: {
-              layout: AppLayoutsEnum.main
+              layout: AppLayoutsEnum.main,
+              auth:true
             }
           },
        
       ]
+})
+
+router.beforeEach((to,from,next)=>{
+  const authStore = useAuthStore();
+  if(to.meta.auth && !authStore.UserInfo.token){
+    next('/register')
+  } else if (!to.meta.auth && authStore.UserInfo.token){
+    next()
+  } else{
+    next();
+  }
 })
 export default router
