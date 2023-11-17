@@ -32,8 +32,10 @@ const router = createRouter({
           component: () => import('../pages/Home.vue'),
           meta: {
             layout: AppLayoutsEnum.main,
+    
           }
         },
+      
         {
             path:'/info',
             name:'Info',
@@ -49,9 +51,10 @@ const router = createRouter({
 
 router.beforeEach((to,from,next)=>{
   const authStore = useAuthStore();
-  if(to.meta.auth && !authStore.UserInfo.token){
+  const requireAuth = to.matched.some(record => record.meta.auth);
+  if(requireAuth && !authStore.UserInfo.token){
     next('/register')
-  } else if (!to.meta.auth && authStore.UserInfo.token){
+  } else if (!requireAuth && authStore.UserInfo.token){
     next()
   } else{
     next();

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { ref,computed } from "vue";
+import { ref, computed } from "vue";
 
 const apiKey = import.meta.env.VITE_API_KEY_FIREBASE;
 export const useAuthStore = defineStore("AuthStore", () => {
@@ -37,7 +37,7 @@ export const useAuthStore = defineStore("AuthStore", () => {
         JSON.stringify({
           token: UserInfo.value.token,
           refreshToken: UserInfo.value.refreshToken,
-          expiresIn: UserInfo.value.expiresIn
+          expiresIn: UserInfo.value.expiresIn,
         })
       );
     } catch (err) {
@@ -60,14 +60,16 @@ export const useAuthStore = defineStore("AuthStore", () => {
     }
   };
   const getTokens = computed(() => {
-    
     const tokens = JSON.parse(localStorage.getItem("userTokens"));
     if (tokens) {
       UserInfo.value.token = tokens.token;
       UserInfo.value.refreshToken = tokens.refreshToken;
-      UserInfo.value.expiresIn = tokens.expiresIn
+      UserInfo.value.expiresIn = tokens.expiresIn;
     }
-    
-  })
-  return { auth, UserInfo, error, getTokens };
+  });
+  const logoutUser = () => {
+    localStorage.removeItem("userTokens");
+    UserInfo.value = {};
+  };
+  return { auth, UserInfo, error, getTokens, logoutUser };
 });

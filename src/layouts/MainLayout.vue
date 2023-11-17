@@ -17,16 +17,14 @@ const authStore = useAuthStore()
         <router-link to="/register"> Зареєструватися</router-link>
         <router-link to="/login"> Увійти</router-link>
       </div>
-      <div
+      <div v-else
         class="p-1 rounded-full bg-red-100 text-[#914cdf] mr-20 w-80 flex justify-around items-center"
       >
-        <router-link to="/register"> Мій акаунт</router-link>
-        <router-link to="/login"> Вийти</router-link>
+        <router-link to="/info"> Інформація</router-link>
+        <router-link @click = "authStore.logoutUser()" to="/"> Вийти</router-link>
       </div>
     </div>
-    <div class="min-w-full flex justify-center items-center mt-6 font-[roboto]">
-      <router-view />
-    </div>
+    
 
     <main
       class="min-w-full flex justify-center items-center mt-6 font-[roboto] grow"
