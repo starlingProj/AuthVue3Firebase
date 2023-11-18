@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+
 import { ref, computed } from "vue";
+import axiosInstance from "@/api.js";
 
 const apiKey = import.meta.env.VITE_API_KEY_FIREBASE;
 export const useAuthStore = defineStore("AuthStore", () => {
@@ -9,7 +10,6 @@ export const useAuthStore = defineStore("AuthStore", () => {
     email: "",
     userId: "",
     refreshToken: "",
-    expiresIn: "",
   });
 
   const error = ref("");
@@ -17,7 +17,7 @@ export const useAuthStore = defineStore("AuthStore", () => {
     error.value = "";
     const stringUrl = type === "signup" ? "signUp" : "signInWithPassword";
     try {
-      let response = await axios.post(
+      let response = await axiosInstance.post(
         `https://identitytoolkit.googleapis.com/v1/accounts:${stringUrl}?key=${apiKey}`,
         {
           ...payload,
@@ -30,19 +30,16 @@ export const useAuthStore = defineStore("AuthStore", () => {
         email: response.data.email,
         userId: response.data.localId,
         refreshToken: response.data.refreshToken,
-        expiresIn: response.data.expiresIn,
       };
       localStorage.setItem(
         "userTokens",
         JSON.stringify({
           token: UserInfo.value.token,
           refreshToken: UserInfo.value.refreshToken,
-          expiresIn: UserInfo.value.expiresIn,
         })
       );
     } catch (err) {
-      console.log(err);
-      switch (err.response.data.error.message) {
+      console.log(err);      switch (err.response.data.error.message) {
         case "EMAIL_EXISTS":
           error.value = "EMAIL ВЖЕ ІСНУЄ";
           break;
@@ -64,7 +61,6 @@ export const useAuthStore = defineStore("AuthStore", () => {
     if (tokens) {
       UserInfo.value.token = tokens.token;
       UserInfo.value.refreshToken = tokens.refreshToken;
-      UserInfo.value.expiresIn = tokens.expiresIn;
     }
   });
   const logoutUser = () => {

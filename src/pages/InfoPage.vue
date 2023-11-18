@@ -1,35 +1,26 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useAuthStore } from "../store/AuthStore";
-import axios from "axios";
+import { onMounted } from "vue";
+import {useFruitStore} from "@/store/FruitStore"
+const fruitStore = useFruitStore()
 
-const authStore = useAuthStore();
-
-const fruits = ref();
-const getFruits = async () => {
-  try {
-    const responce = await axios.get(
-      `https://testauth-2ea5c-default-rtdb.europe-west1.firebasedatabase.app/info.json`
-    );
-    fruits.value=responce.data;
-  } catch (err) {
-    console.log(err.responce);
-  }
-};
-onMounted(async()=>{
-    await getFruits()
-})
+onMounted(async () => {
+  await fruitStore.getFruits();
+});
 </script>
 
 <template>
+  <main class="flex flex-col items-center ">
+  <span class="mb-5 text-3xl text-amber-600 font-extrabold ">Some info from Back-End</span>
   <div class="flex flex-col gap-3">
-    <div v-for="(fruit, i) in fruits" :key="i">
+    
+    <div v-for="(fruit, i) in fruitStore.fruits" :key="i">
       <section>
-        Fruit color = {{ fruit.color }} Fruit sweet = {{ fruit.sweet }} {{fruit}}
+        Fruit color = {{ fruit.color }} Fruit sweet = {{ fruit.sweet }}
+        {{ fruit }}
       </section>
     </div>
   </div>
-  <!-- https://testauth-2ea5c-default-rtdb.europe-west1.firebasedatabase.app/ -->
+</main>
 </template>
 
 <style scoped></style>

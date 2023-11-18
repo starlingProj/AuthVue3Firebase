@@ -2,6 +2,8 @@
 import { useAuthStore } from '../store/AuthStore';
 
 const authStore = useAuthStore()
+
+
 </script>
 <template>
   <div class="flex flex-col min-h-screen">
@@ -21,7 +23,7 @@ const authStore = useAuthStore()
         class="p-1 rounded-full bg-red-100 text-[#914cdf] mr-20 w-80 flex justify-around items-center"
       >
         <router-link to="/info"> Інформація</router-link>
-        <router-link @click = "authStore.logoutUser()" to="/"> Вийти</router-link>
+        <router-link @click.prevent = "authStore.logoutUser()" to="/"> Вийти</router-link>
       </div>
     </div>
     

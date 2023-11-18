@@ -54,8 +54,8 @@ router.beforeEach((to,from,next)=>{
   const requireAuth = to.matched.some(record => record.meta.auth);
   if(requireAuth && !authStore.UserInfo.token){
     next('/register')
-  } else if (!requireAuth && authStore.UserInfo.token){
-    next()
+  } else if ((to.name=='Registration'|| to.name=='Login') && authStore.UserInfo.token){
+    next('/')
   } else{
     next();
   }
